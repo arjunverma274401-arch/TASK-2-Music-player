@@ -25,7 +25,7 @@ function loadTrack(track) {
 
 loadTrack(playlist[currentTrackIndex]);
 
-playButton.onclick = () => {
+playButton.addEventListener("click", () => {
     if (audioPlayer.paused) {
         audioPlayer.play();
         playButton.textContent = "⏸";
@@ -33,34 +33,34 @@ playButton.onclick = () => {
         audioPlayer.pause();
         playButton.textContent = "▶";
     }
-};
+});
 
-nextButton.onclick = () => {
+nextButton.addEventListener("click", () => {
     currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
     loadTrack(playlist[currentTrackIndex]);
     audioPlayer.play();
-};
+});
 
-prevButton.onclick = () => {
+prevButton.addEventListener("click", () => {
     currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
     loadTrack(playlist[currentTrackIndex]);
     audioPlayer.play();
-};
+});
 
-audioPlayer.ontimeupdate = () => {
+audioPlayer.addEventListener("timeupdate", () => {
     progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100 || 0;
 
     currentTimeText.textContent = formatTime(audioPlayer.currentTime);
     totalDurationText.textContent = formatTime(audioPlayer.duration);
-};
+});
 
-progressBar.oninput = () => {
+progressBar.addEventListener("input", () => {
     audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
-};
+});
 
-volumeControl.oninput = () => {
+volumeControl.addEventListener("input", () => {
     audioPlayer.volume = volumeControl.value;
-};
+});
 
 function formatTime(time) {
     if (!time) return "0:00";
@@ -71,6 +71,6 @@ function formatTime(time) {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
-audioPlayer.onended = () => {
+audioPlayer.addEventListener("ended", () => {
     nextButton.click();
-};
+});
