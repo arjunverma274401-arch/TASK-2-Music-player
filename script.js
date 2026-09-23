@@ -1,85 +1,76 @@
-const audio = document.getElementById("audio");
-const playBtn = document.getElementById("play");
-const prevBtn = document.getElementById("prev");
-const nextBtn = document.getElementById("next");
-const progress = document.getElementById("progress");
-const volume = document.getElementById("volume");
+const audioPlayer = document.getElementById("audio");
+const playButton = document.getElementById("play");
+const prevButton = document.getElementById("prev");
+const nextButton = document.getElementById("next");
+const progressBar = document.getElementById("progress");
+const volumeControl = document.getElementById("volume");
 
-const title = document.getElementById("title");
-const artist = document.getElementById("artist");
-const current = document.getElementById("current");
-const duration = document.getElementById("duration");
+const trackTitle = document.getElementById("title");
+const artistName = document.getElementById("artist");
+const currentTimeText = document.getElementById("current");
+const totalDurationText = document.getElementById("duration");
 
-// Playlist
-const songs = [
-    { name: "songs/song1.mp3", title: "Song 1", artist: "Artist 1" },
-    { name: "songs/song2.mp3", title: "Song 2", artist: "Artist 2" },
-    
+const playlist = [
+    { src: "songs/song1.mp3", title: "Song 1", artist: "Artist 1" },
+    { src: "songs/song2.mp3", title: "Song 2", artist: "Artist 2" }
 ];
 
-let songIndex = 0;
+let currentTrackIndex = 0;
 
-// Load song
-function loadSong(song) {
-    audio.src = song.name;
-    title.textContent = song.title;
-    artist.textContent = song.artist;
+function loadTrack(track) {
+    audioPlayer.src = track.src;
+    trackTitle.textContent = track.title;
+    artistName.textContent = track.artist;
 }
 
-loadSong(songs[songIndex]);
+loadTrack(playlist[currentTrackIndex]);
 
-// Play / Pause
-playBtn.onclick = () => {
-    if (audio.paused) {
-        audio.play();
-        playBtn.textContent = "⏸";
+playButton.onclick = () => {
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+        playButton.textContent = "⏸";
     } else {
-        audio.pause();
-        playBtn.textContent = "▶";
+        audioPlayer.pause();
+        playButton.textContent = "▶";
     }
 };
 
-// Next
-nextBtn.onclick = () => {
-    songIndex = (songIndex + 1) % songs.length;
-    loadSong(songs[songIndex]);
-    audio.play();
+nextButton.onclick = () => {
+    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+    loadTrack(playlist[currentTrackIndex]);
+    audioPlayer.play();
 };
 
-// Prev
-prevBtn.onclick = () => {
-    songIndex = (songIndex - 1 + songs.length) % songs.length;
-    loadSong(songs[songIndex]);
-    audio.play();
+prevButton.onclick = () => {
+    currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+    loadTrack(playlist[currentTrackIndex]);
+    audioPlayer.play();
 };
 
-// Update progress
-audio.ontimeupdate = () => {
-    progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+audioPlayer.ontimeupdate = () => {
+    progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100 || 0;
 
-    current.textContent = formatTime(audio.currentTime);
-    duration.textContent = formatTime(audio.duration);
+    currentTimeText.textContent = formatTime(audioPlayer.currentTime);
+    totalDurationText.textContent = formatTime(audioPlayer.duration);
 };
 
-// Seek
-progress.oninput = () => {
-    audio.currentTime = (progress.value / 100) * audio.duration;
+progressBar.oninput = () => {
+    audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
 };
 
-// Volume
-volume.oninput = () => {
-    audio.volume = volume.value;
+volumeControl.oninput = () => {
+    audioPlayer.volume = volumeControl.value;
 };
 
-// Format time
 function formatTime(time) {
     if (!time) return "0:00";
-    let min = Math.floor(time / 60);
-    let sec = Math.floor(time % 60);
-    return `${min}:${sec < 10 ? "0" : ""}${sec}`;
+
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
-// Autoplay next song
-audio.onended = () => {
-    nextBtn.click();
+audioPlayer.onended = () => {
+    nextButton.click();
 };
